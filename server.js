@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import CryptoJS from "crypto-js";
 
 const app = express();
-const encryptionKey = "Fuck_u_nigga._this_encription_key_aint_gon_work_for_u_|_dunmb_nigga_boi!"; // Change this and keep it secret!
+const encryptionKey = "super-secret-key"; // Change this and keep it secret!
 
 // Enable CORS
 app.use(cors());
