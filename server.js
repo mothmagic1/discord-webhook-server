@@ -1,9 +1,9 @@
-const express = require('express');
+import express = require('express');
 import fetch from 'node-fetch'; // For Node.js 18.x and newer (ES Modules)
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import cors = require('cors');
+import bodyParser = require('body-parser');
 
-const app = express();
+import app = express();
 
 // Enable CORS
 app.use(cors());
@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 
 // This is the route that will handle the POST request to /webhook
 app.post('/webhook', (req, res) => {
-    const webhookData = req.body;
-    const webhookUrl = 'https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq';  // Replace this with your actual Discord webhook URL
+    import webhookData = req.body;
+    import webhookUrl = 'https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq';  // Replace this with your actual Discord webhook URL
 
     // Send the data to the Discord webhook URL
     fetch(webhookUrl, {
