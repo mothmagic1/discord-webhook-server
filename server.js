@@ -1,5 +1,5 @@
 const express = require('express');
-const fetch = require('node-fetch'); // Importing node-fetch
+import fetch from 'node-fetch'; // For Node.js 18.x and newer (ES Modules)
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
