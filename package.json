@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "discord-webhook-server",
   "version": "1.0.0",
   "description": "A simple webhook server",
