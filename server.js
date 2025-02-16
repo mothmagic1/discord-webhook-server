@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
 import rateLimit from 'express-rate-limit';
 
 const app = express();
-const encryptionKey = "your_secret_key24"; // Replace with your real secret key
+const encryptionKey = "nigga.u.are.a.coon.u.aint.gon.find.a.vulnerability"; // Replace with your real secret key
 
 // Rate-limiting middleware
 const limiter = rateLimit({
