@@ -10,8 +10,8 @@ const encryptionKey = "nigga.u.are.a.coon.u.aint.gon.find.a.vulnerability";
 
 // Rate-limiting middleware
 const limiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 20, // Limit each IP to 10 requests per 5 minutes
+    windowMs: 1 * 60 * 1000, // 5 minutes
+    max: 5, // Limit each IP to 10 requests per 5 minutes
     message: { error: "Too many requests from this IP. Please try again later." }, // Send JSON response
     headers: true,
 });
