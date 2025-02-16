@@ -12,7 +12,7 @@ const encryptionKey = "nigga.u.are.a.coon.u.aint.gon.find.a.vulnerability";
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 5 minutes
     max: 5, // Limit each IP to 10 requests per 5 minutes
-    message: { error: "Too many requests from this IP. Please try again later." }, // Send JSON response
+    message: { error: "Too many requests from this IP. Please try again in 1 minute." }, // Send JSON response
     headers: true,
 });
 
