@@ -3,9 +3,18 @@ import fetch from "node-fetch";
 import cors from "cors";
 import bodyParser from "body-parser";
 import CryptoJS from "crypto-js";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 const encryptionKey = "nigga.u.are.a.coon.u.aint.gon.find.a.vulnerability";
+
+// Rate-limiting middleware
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 10, // Limit each IP to 10 requests per windowMs
+    message: "Too many requests from this IP, please try again later",
+    headers: true,
+});
 
 // In-memory store for passwords and timestamps
 const passwordStore = new Map();
@@ -28,7 +37,8 @@ function delay(ms) {
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/webhook", async (req, res) => {
+// Apply rate limiting to the /webhook route
+app.post("/webhook", limiter, async (req, res) => {
     try {
         const referrer = req.get("Referrer");
         if (!referrer || !referrer.startsWith("https://ghostyreceipts.xyz")) {
